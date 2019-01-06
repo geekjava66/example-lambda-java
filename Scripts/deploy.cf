@@ -153,16 +153,23 @@
                             "Statement":    [
                                                 {
                                                     "Effect":   "Allow",
-                                                    "Action":   [ "logs:CreateLogGroup" ],
+                                                    "Action":   [
+                                                        "logs:CreateLogGroup",
+                                                        "logs:DescribeLogGroup"
+                                                    ],
                                                     "Resource": [ { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:*" } ]
                                                 },
                                                 {
                                                     "Effect": "Allow",
                                                     "Action": [
                                                         "logs:CreateLogStream",
+                                                        "logs:DescribeLogStream",
                                                         "logs:PutLogEvents"
                                                     ],
-                                                    "Resource": [ { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/${BaseName}-Webapp:*" } ]
+                                                    "Resource": [
+                                                        { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:LambdaExample:*" },
+                                                        { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/${BaseName}-Webapp:*" }
+                                                    ]
                                                 }
                                             ]
                         }
@@ -353,16 +360,23 @@
                             "Statement":    [
                                                 {
                                                     "Effect":   "Allow",
-                                                    "Action":   [ "logs:CreateLogGroup" ],
+                                                    "Action":   [
+                                                        "logs:CreateLogGroup",
+                                                        "logs:DescribeLogGroup"
+                                                    ],
                                                     "Resource": [ { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:*" } ]
                                                 },
                                                 {
                                                     "Effect": "Allow",
                                                     "Action": [
                                                         "logs:CreateLogStream",
+                                                        "logs:DescribeLogStream",
                                                         "logs:PutLogEvents"
                                                     ],
-                                                    "Resource": [ { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/${BaseName}-Resizer:*" } ]
+                                                    "Resource": [
+                                                        { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:LambdaExample:*" },
+                                                        { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/${BaseName}-Resizer:*" } 
+                                                    ]
                                                 }
                                             ]
                         }
