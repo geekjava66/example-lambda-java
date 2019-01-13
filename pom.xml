@@ -33,7 +33,7 @@
         <jose4j.version>0.5.4</jose4j.version>
         <junit.version>4.10</junit.version>
         <logback.version>1.2.3</logback.version>
-        <logging-appenders.version>2.1.1</logging-appenders.version>
+        <aws-appenders.version>2.1.2-SNAPSHOT</aws-appenders.version>
         <kdgcommons.version>1.0.15</kdgcommons.version>
         <slf4j.version>1.7.8</slf4j.version>
 

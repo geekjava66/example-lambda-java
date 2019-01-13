@@ -9,7 +9,7 @@
     <appender name="CLOUDWATCH" class="com.kdgregory.logback.aws.CloudWatchAppender">
         <logGroup>LambdaExample</logGroup>
         <logStream>Resizer</logStream>
-        <batchDelay>1</batchDelay>
+        <synchronous>true</synchronous>
         <layout class="com.kdgregory.logback.aws.JsonLayout">
             <enableHostname>true</enableHostname>
             <enableLocation>true</enableLocation>

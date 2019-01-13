@@ -37,7 +37,7 @@
         <dependency>
             <groupId>com.kdgregory.logging</groupId>
             <artifactId>logback-aws-appenders</artifactId>
-            <version>${logging-appenders.version}</version>
+            <version>${aws-appenders.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
