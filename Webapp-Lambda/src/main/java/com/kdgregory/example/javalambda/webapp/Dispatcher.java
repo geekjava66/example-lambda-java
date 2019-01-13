@@ -67,6 +67,10 @@ public class Dispatcher
             logger.error("unexpected exception during request processing", ex);
             return buildResponseMap(new Response(500));
         }
+        finally
+        {
+            MDC.clear();
+        }
     }
 
 
