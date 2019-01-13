@@ -23,6 +23,7 @@ import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.kdgregory.example.javalambda.config.Environment;
 import com.kdgregory.example.javalambda.webapp.Request;
@@ -178,8 +179,6 @@ public class UserService
             return new Response(ResponseCodes.INVALID_REQUEST, null);
         }
 
-        logger.debug("signIn: {}", emailAddress);
-
         try
         {
             Map<String,String> authParams = new HashMap<>();
@@ -200,7 +199,7 @@ public class UserService
             }
             else if (ChallengeNameType.NEW_PASSWORD_REQUIRED.name().equals(authResponse.getChallengeName()))
             {
-                logger.debug("signIn: attempt to sign in with temporary password: {}", emailAddress);
+                logger.debug("signIn: sign in with temporary password: {}", emailAddress);
                 return new Response(ResponseCodes.TEMPORARY_PASSWORD, null);
             }
             else
@@ -211,7 +210,7 @@ public class UserService
         }
         catch (UserNotFoundException ex)
         {
-            logger.debug("signIn: user not found: {}", emailAddress);
+            logger.debug("signIn: user not found: {}", redactUsername(emailAddress));
             return new Response(ResponseCodes.INVALID_USER, null);
 
         }
@@ -363,7 +362,7 @@ public class UserService
         }
         catch (UserNotFoundException ex)
         {
-            logger.debug("confirmSignup: user not found: {}", emailAddress);
+            logger.debug("signIn: user not found: {}", redactUsername(emailAddress));
             return new Response(ResponseCodes.INVALID_USER, null);
         }
         catch (NotAuthorizedException ex)
@@ -396,7 +395,6 @@ public class UserService
             return new Response(ResponseCodes.NOT_AUTHENTICATED);
         }
 
-        // first try to validate the access token
         try
         {
             String username = checkAccessToken(accessToken);
@@ -404,6 +402,7 @@ public class UserService
             {
                 logger.debug("checkAuthorization: success: {}", username);
                 request.setUser(username);
+                MDC.put("username", username);
                 return op.apply(request);
             }
             else
@@ -482,5 +481,19 @@ public class UserService
             logger.error("attemptRefresh: unexpected exception", ex);
             throw new UnhandledServiceException();
         }
+    }
+
+
+    /**
+     *  A helper method to redact usernames. Anything that generally looks like an email
+     *  address will be returned unchanged. Otherwise only the first four characters are
+     *  returned, followed by dots, to avoid leaking a password mis-entered as a username.
+     */
+    private static String redactUsername(String username)
+    {
+        if (username.contains("@") && (username.indexOf('.') > username.indexOf('@')))
+            return username;
+        else
+            return "REDACTED  (" + StringUtil.substr(username, 0, 4) + "...)";
     }
 }
