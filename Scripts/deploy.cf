@@ -131,26 +131,24 @@
             }
         },
 
+        "ResizerLogGroup": {
+            "Type" : "AWS::Logs::LogGroup",
+            "DeletionPolicy" : "Delete",
+            "Properties" : {
+                "LogGroupName" : { "Fn::Sub": "/aws/lambda/${BaseName}-Resizer" },
+                "RetentionInDays" : 7
+            }
+        },
 
-        "WebappExecutionRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "RoleName": { "Fn::Sub": "${BaseName}-WebappExecutionRole" },
-                "Path": "/service-role/",
-                "AssumeRolePolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": {
-                        "Effect":   "Allow",
-                        "Action":   [ "sts:AssumeRole" ],
-                        "Principal": { "Service": [ "lambda.amazonaws.com" ] }
-                    }
-                },
-                "Policies": [
-                    {
-                        "PolicyName":       { "Fn::Sub": "${BaseName}-WebappCloudwatchPolicy" },
-                        "PolicyDocument":   {
-                            "Version":      "2012-10-17",
-                            "Statement":    [
+
+        "LoggingPolicy": {
+            "Type":                     "AWS::IAM::ManagedPolicy",
+            "Properties" : {
+                "ManagedPolicyName":    { "Fn::Sub": "${BaseName}-LoggingPolicy" },
+                "Description":          "Shared policy controlling all logging output",
+                "PolicyDocument":       {
+                                            "Version":      "2012-10-17",
+                                            "Statement":    [
                                                 {
                                                     "Effect":   "Allow",
                                                     "Action":   [
@@ -168,12 +166,31 @@
                                                     ],
                                                     "Resource": [
                                                         { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:LambdaExample:*" },
-                                                        { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/${BaseName}-Webapp:*" }
+                                                        { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/${BaseName}-*:*" }
                                                     ]
                                                 }
                                             ]
-                        }
-                    }, {
+                                        }
+            }
+        },
+
+
+        "WebappExecutionRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": { "Fn::Sub": "${BaseName}-WebappExecutionRole" },
+                "Path": "/service-role/",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": {
+                        "Effect":   "Allow",
+                        "Action":   [ "sts:AssumeRole" ],
+                        "Principal": { "Service": [ "lambda.amazonaws.com" ] }
+                    }
+                },
+                "ManagedPolicyArns": [ { "Ref": "LoggingPolicy" } ],
+                "Policies": [
+                    {
                         "PolicyName":       { "Fn::Sub": "${BaseName}-WebappCognitoPolicy" },
                         "PolicyDocument":   {
                             "Version":      "2012-10-17",
@@ -329,15 +346,6 @@
             }
         },
 
-        "ResizerLogGroup": {
-            "Type" : "AWS::Logs::LogGroup",
-            "DeletionPolicy" : "Delete",
-            "Properties" : {
-                "LogGroupName" : { "Fn::Sub": "/aws/lambda/${BaseName}-Resizer" },
-                "RetentionInDays" : 7
-            }
-        },
-
 
         "ResizerExecutionRole": {
             "Type": "AWS::IAM::Role",
@@ -352,35 +360,9 @@
                         "Principal": { "Service": [ "lambda.amazonaws.com" ] }
                     }
                 },
+                "ManagedPolicyArns": [ { "Ref": "LoggingPolicy" } ],
                 "Policies": [
                     {
-                        "PolicyName":       { "Fn::Sub": "${BaseName}-ResizerCloudwatchPolicy" },
-                        "PolicyDocument":   {
-                            "Version":      "2012-10-17",
-                            "Statement":    [
-                                                {
-                                                    "Effect":   "Allow",
-                                                    "Action":   [
-                                                        "logs:CreateLogGroup",
-                                                        "logs:DescribeLogGroup"
-                                                    ],
-                                                    "Resource": [ { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:*" } ]
-                                                },
-                                                {
-                                                    "Effect": "Allow",
-                                                    "Action": [
-                                                        "logs:CreateLogStream",
-                                                        "logs:DescribeLogStream",
-                                                        "logs:PutLogEvents"
-                                                    ],
-                                                    "Resource": [
-                                                        { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:LambdaExample:*" },
-                                                        { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/${BaseName}-Resizer:*" } 
-                                                    ]
-                                                }
-                                            ]
-                        }
-                    }, {
                         "PolicyName":       { "Fn::Sub": "${BaseName}-ResizerDynamoPolicy" },
                         "PolicyDocument":   {
                             "Version":      "2012-10-17",
