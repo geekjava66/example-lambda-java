@@ -1,4 +1,4 @@
-<configuration debug="true">
+<configuration debug="false">
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -7,7 +7,7 @@
     </appender>
 
     <appender name="CLOUDWATCH" class="com.kdgregory.logback.aws.CloudWatchAppender">
-        <logGroup>LambdaExample</logGroup>
+        <logGroup>{env:APPLICATION_NAME}</logGroup>
         <logStream>Webapp</logStream>
         <synchronous>true</synchronous>
         <layout class="com.kdgregory.logback.aws.JsonLayout">

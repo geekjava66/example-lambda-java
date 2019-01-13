@@ -165,7 +165,7 @@
                                                         "logs:PutLogEvents"
                                                     ],
                                                     "Resource": [
-                                                        { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:LambdaExample:*" },
+                                                        { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:${BaseName}:*" },
                                                         { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/${BaseName}-*:*" }
                                                     ]
                                                 }
@@ -272,6 +272,7 @@
                 "Timeout": 30,
                 "Environment": {
                     "Variables": {
+                        "APPLICATION_NAME":  { "Ref": "BaseName" },
                         "COGNITO_POOL_ID":   { "Ref": "CognitoUserPool" },
                         "COGNITO_CLIENT_ID": { "Ref": "CognitoUserPoolClient" },
                         "DYNAMO_TABLE":      { "Ref": "DynamoMetadataTable" },
@@ -412,6 +413,7 @@
                 "Timeout": 30,
                 "Environment": {
                     "Variables": {
+                        "APPLICATION_NAME":  { "Ref": "BaseName" },
                         "DYNAMO_TABLE":      { "Ref": "DynamoMetadataTable" },
                         "S3_IMAGE_BUCKET":   { "Ref": "Bucket" },
                         "S3_IMAGE_PREFIX":   "images"
