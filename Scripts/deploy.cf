@@ -155,7 +155,7 @@
                                                     "Effect":   "Allow",
                                                     "Action":   [
                                                         "logs:CreateLogGroup",
-                                                        "logs:DescribeLogGroup"
+                                                        "logs:DescribeLogGroups"
                                                     ],
                                                     "Resource": [ { "Fn::Sub": "arn:aws:logs:*:${AWS::AccountId}:*" } ]
                                                 },
@@ -163,7 +163,7 @@
                                                     "Effect": "Allow",
                                                     "Action": [
                                                         "logs:CreateLogStream",
-                                                        "logs:DescribeLogStream",
+                                                        "logs:DescribeLogStreams",
                                                         "logs:PutLogEvents"
                                                     ],
                                                     "Resource": [
