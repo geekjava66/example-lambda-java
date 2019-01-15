@@ -93,11 +93,13 @@ public class Dispatcher
 
         String method      = (String)CollectionUtil.getVia(proxyRequest, "httpMethod");
         String action      = (String)CollectionUtil.getVia(proxyRequest, "pathParameters", "action");
+        String amzTraceId  = (String)CollectionUtil.getVia(proxyRequest, "headers", "X-Amzn-Trace-Id");
         String tokenHeader = (String)CollectionUtil.getVia(proxyRequest, "headers", "Cookie");
         String body        = (String)CollectionUtil.getVia(proxyRequest, "body");
-        
+
         MDC.put("requestMethod", method);
         MDC.put("action", action);
+        MDC.put("X-Amzn-Trace-Id", amzTraceId);
 
         // body will be empty on GET, but rather than have separate code paths I'll give a dummy value
         if (StringUtil.isEmpty(body))
@@ -110,6 +112,7 @@ public class Dispatcher
             return new Request(
                     method,
                     action,
+                    amzTraceId,
                     new Tokens(tokenHeader),
                     CollectionUtil.cast(
                         mapper.readValue(body, HashMap.class),
