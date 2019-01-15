@@ -23,9 +23,9 @@ import org.jose4j.keys.resolvers.HttpsJwksVerificationKeyResolver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import com.kdgregory.example.javalambda.config.Environment;
+import com.kdgregory.example.javalambda.util.LoggingContext;
 import com.kdgregory.example.javalambda.webapp.Request;
 import com.kdgregory.example.javalambda.webapp.Response;
 import com.kdgregory.example.javalambda.webapp.ResponseCodes;
@@ -402,7 +402,7 @@ public class UserService
             {
                 logger.debug("checkAuthorization: success: {}", username);
                 request.setUser(username);
-                MDC.put("username", username);
+                LoggingContext.setUsername(username);
                 return op.apply(request);
             }
             else

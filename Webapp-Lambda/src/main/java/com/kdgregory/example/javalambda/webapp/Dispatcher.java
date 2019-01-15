@@ -10,6 +10,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.kdgregory.example.javalambda.util.LoggingContext;
 import com.kdgregory.example.javalambda.webapp.Request.HttpMethod;
 import com.kdgregory.example.javalambda.webapp.services.PhotoService;
 import com.kdgregory.example.javalambda.webapp.services.UnhandledServiceException;
@@ -18,7 +19,6 @@ import com.kdgregory.example.javalambda.webapp.util.Tokens;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import net.sf.kdgcommons.collections.CollectionUtil;
 import net.sf.kdgcommons.lang.StringUtil;
@@ -44,7 +44,7 @@ public class Dispatcher
 
     public Map<String,Object> handler(Map<String,Object> proxyRequest, Context lambdaContext)
     {
-        MDC.put("requestId", lambdaContext.getAwsRequestId());
+        LoggingContext.setRequestId(lambdaContext.getAwsRequestId());
 
         try
         {
@@ -69,7 +69,7 @@ public class Dispatcher
         }
         finally
         {
-            MDC.clear();
+            LoggingContext.clear();
         }
     }
 
@@ -97,9 +97,8 @@ public class Dispatcher
         String tokenHeader = (String)CollectionUtil.getVia(proxyRequest, "headers", "Cookie");
         String body        = (String)CollectionUtil.getVia(proxyRequest, "body");
 
-        MDC.put("requestMethod", method);
-        MDC.put("action", action);
-        MDC.put("X-Amzn-Trace-Id", amzTraceId);
+        LoggingContext.setAction(action);
+        LoggingContext.setTraceId(amzTraceId);
 
         // body will be empty on GET, but rather than have separate code paths I'll give a dummy value
         if (StringUtil.isEmpty(body))
